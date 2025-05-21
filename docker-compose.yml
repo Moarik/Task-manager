@@ -45,6 +45,21 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+  statistics_db:
+    container_name: statistics_db
+    image: postgres:15
+    restart: always
+    env_file:
+      - ./statistics/.env
+    ports:
+      - "5435:5432"
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
   user:
     container_name: user_service
     build:
@@ -73,6 +88,20 @@ services:
         condition: service_healthy
     networks:
       - app-network
+  statistics:
+    container_name: statistics_service
+    build:
+      context: .
+      dockerfile: ./statistics/Dockerfile
+    ports:
+      - "8083:8083"
+    env_file:
+      - ./statistics/.env
+    networks:
+      - app-network
+    depends_on:
+      statistics_db:
+        condition: service_healthy
   api-gateway:
     container_name: api_gateway
     build:
@@ -85,6 +114,7 @@ services:
     depends_on:
       - user
       - task
+      - statistics
     networks:
       - app-network
 
