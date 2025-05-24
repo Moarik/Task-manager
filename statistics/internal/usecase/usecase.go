@@ -32,3 +32,21 @@ func (s *Statistics) GetTaskStatistics(ctx context.Context) (*model.TaskStatisti
 
 	return statistics, nil
 }
+
+func (s *Statistics) CreateUserStatistics(ctx context.Context, client model.UserNats) error {
+	err := s.Repo.CreateUserStatistics(ctx, client)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *Statistics) CreateTaskStatistics(ctx context.Context, client model.TaskNats) error {
+	err := s.Repo.CreateTaskStatistics(ctx, client)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

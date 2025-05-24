@@ -64,6 +64,12 @@ func (a *API) setupRoutes() {
 			protectedGroup.DELETE("/task/:id", a.ClientHandler.DeleteUserTaskByID)
 		}
 	}
+
+	statisticsGroup := a.server.Group("/statistics")
+	{
+		statisticsGroup.GET("/user", a.ClientHandler.GetUserStatistics)
+		statisticsGroup.GET("/task", a.ClientHandler.GetAllUserStatistics)
+	}
 }
 
 func (a *API) Run(errCh chan<- error) {

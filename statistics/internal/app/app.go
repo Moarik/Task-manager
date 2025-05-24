@@ -6,20 +6,25 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"taskManager/statistics/config"
+	grpcserver "taskManager/statistics/internal/adapter/grpc/service"
 	httpserver "taskManager/statistics/internal/adapter/http/service"
+	natshandler "taskManager/statistics/internal/adapter/nats/handler"
 	"taskManager/statistics/internal/adapter/postgres"
 	"taskManager/statistics/internal/usecase"
+	natsconn "taskManager/statistics/pkg/nats"
+	natsconsumer "taskManager/statistics/pkg/nats/consumer"
 	postgreconn "taskManager/statistics/pkg/postgre"
 )
 
 const serviceName = "statistics-service"
 
 type App struct {
-	httpServer *httpserver.API
-	// TODO grpc server
-	//grpcServer *grpc.Server
+	httpServer         *httpserver.API
+	grpcServer         *grpcserver.API
+	natsPubSubConsumer *natsconsumer.PubSub
 }
 
 func New(ctx context.Context, cfg *config.Config) (*App, error) {
@@ -31,6 +36,16 @@ func New(ctx context.Context, cfg *config.Config) (*App, error) {
 		return nil, fmt.Errorf("mongo: %w", err)
 	}
 
+	// nats client
+	log.Println("connecting to NATS", "hosts", strings.Join(cfg.Nats.Hosts, ","))
+	natsClient, err := natsconn.NewClient(ctx, cfg.Nats.Hosts, cfg.Nats.NKey, cfg.Nats.IsTest)
+	if err != nil {
+		return nil, fmt.Errorf("nats.NewClient: %w", err)
+	}
+	log.Println("NATS connection status is", natsClient.Conn.Status().String())
+
+	natsPubSubConsumer := natsconsumer.NewPubSub(natsClient)
+
 	postgresDB.Migrate()
 
 	// Repository
@@ -39,10 +54,21 @@ func New(ctx context.Context, cfg *config.Config) (*App, error) {
 	// Usecase
 	statisticsUsecase := usecase.New(statisticsRepo)
 
+	// Nats handler
+	natsHandler := natshandler.NewClient(statisticsUsecase)
+	natsPubSubConsumer.Subscribe(natsconsumer.PubSubSubscriptionConfig{
+		Subject: cfg.Nats.NatsSubjects.UserCreatedEventSubject,
+		Handler: natsHandler.HandleUserCreated,
+	})
+
 	httpServer := httpserver.New(cfg.Server, statisticsUsecase)
 
+	grpcServer := grpcserver.New(cfg.Server.GRPCServer, statisticsUsecase)
+
 	app := &App{
-		httpServer: httpServer,
+		httpServer:         httpServer,
+		natsPubSubConsumer: natsPubSubConsumer,
+		grpcServer:         grpcServer,
 	}
 
 	return app, nil
@@ -63,9 +89,9 @@ func (a *App) Close(ctx context.Context) {
 func (a *App) Run() error {
 	errCh := make(chan error, 1)
 	ctx := context.Background()
+	a.grpcServer.Run(ctx, errCh)
 	a.httpServer.Run(errCh)
-	//a.grpcServer.Run(ctx, errCh)
-
+	a.natsPubSubConsumer.Start(ctx, errCh)
 	log.Println(fmt.Sprintf("service %v started", serviceName))
 
 	// Waiting signal

@@ -17,8 +17,9 @@ import (
 const serviceName = "api-gateway"
 
 var (
-	userConnection = "user:4000"
-	taskConnection = "task:4001"
+	userConnection       = "user:4000"
+	taskConnection       = "task:4001"
+	statisticsConnection = "statistics:4002"
 )
 
 type App struct {
@@ -40,7 +41,13 @@ func New(ctx context.Context, cfg *config.Config) (*App, error) {
 		log.Fatalf("Failed to connect to task: %v", err)
 	}
 
-	clientHandler := handler.New(cfg.Server, userConn, taskConn)
+	// grpc statistics connection
+	statisticsConn, err := grpc.Dial(statisticsConnection, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("Failed to connect to task: %v", err)
+	}
+
+	clientHandler := handler.New(cfg.Server, userConn, taskConn, statisticsConn)
 
 	// http server
 	httpServer := httpserver.New(cfg.Server, clientHandler)

@@ -47,7 +47,7 @@ type (
 	}
 
 	NatsSubjects struct {
-		ClientEventSubject string `env:"NATS_CLIENT_EVENT_SUBJECT,notEmpty"`
+		UserCreatedEventSubject string `env:"NATS_USER_EVENT_SUBJECT,notEmpty"`
 	}
 )
 

@@ -7,19 +7,22 @@ import (
 	"net/http"
 	"strconv"
 	"taskManager/api-gateway/config"
+	"taskManager/proto/gen/statistics"
 	taskSvc "taskManager/proto/gen/task"
 	userSvc "taskManager/proto/gen/user"
 )
 
 type Client struct {
-	userClient userSvc.UserServiceClient
-	taskClient taskSvc.TaskServiceClient
+	userClient       userSvc.UserServiceClient
+	taskClient       taskSvc.TaskServiceClient
+	statisticsClient statistics.StatisticsServiceClient
 }
 
-func New(cfg config.Server, userConn *grpc.ClientConn, taskConn *grpc.ClientConn) *Client {
+func New(cfg config.Server, userConn *grpc.ClientConn, taskConn *grpc.ClientConn, statisticsConn *grpc.ClientConn) *Client {
 	return &Client{
-		userClient: userSvc.NewUserServiceClient(userConn),
-		taskClient: taskSvc.NewTaskServiceClient(taskConn),
+		userClient:       userSvc.NewUserServiceClient(userConn),
+		taskClient:       taskSvc.NewTaskServiceClient(taskConn),
+		statisticsClient: statistics.NewStatisticsServiceClient(statisticsConn),
 	}
 }
 
@@ -236,4 +239,28 @@ func (c *Client) DeleteUserTaskByID(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"deleted": true})
+}
+
+func (c *Client) GetUserStatistics(ctx *gin.Context) {
+	var req statistics.Empty
+
+	returnThing, err := c.statisticsClient.GetUserStatistics(ctx, &req)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"statistics": returnThing})
+}
+
+func (c *Client) GetAllUserStatistics(ctx *gin.Context) {
+	var req statistics.Empty
+
+	returnThing, err := c.statisticsClient.GetUserStatistics(ctx, &req)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"statistics": returnThing})
 }
