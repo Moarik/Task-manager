@@ -28,6 +28,7 @@ func (t *Task) CreateUserTask(ctx context.Context, task model.Task) (*model.Task
 	}
 
 	task.ID = insertObject.ID
+	task.UserID = insertObject.UserID
 
 	return &task, nil
 }
@@ -57,26 +58,30 @@ func (t *Task) DeleteUserTaskByID(ctx context.Context, userID, taskID int64) err
 }
 
 // UpdateUserTaskByID update users task
+// UpdateUserTaskByID обновляет задачу пользователя по ID
 func (t *Task) UpdateUserTaskByID(ctx context.Context, task model.Task) (*model.Task, error) {
 	var daoTask dao.Task
 
-	if err := t.DB.GetDB().WithContext(ctx).Where("id = $1", task.ID).Delete(&daoTask).Error; err != nil {
+	fmt.Printf("UpdateUserTaskByID — task.ID: %d, task.UserID: %d\n", task.ID, task.UserID)
+
+	err := t.DB.GetDB().WithContext(ctx).First(&daoTask, task.ID).Error
+	if err != nil {
 		return nil, err
+	}
+
+	if daoTask.UserID != task.UserID {
+		return nil, fmt.Errorf("unauthorized: task does not belong to user %d", task.UserID)
 	}
 
 	if task.Title != "" {
 		daoTask.Title = task.Title
 	}
-
 	if task.Description != "" {
 		daoTask.Description = task.Description
 	}
+	daoTask.Completed = task.Completed
 
-	if task.Completed == true {
-		daoTask.Completed = true
-	}
-
-	err := t.DB.GetDB().WithContext(ctx).Save(&daoTask).Error
+	err = t.DB.GetDB().WithContext(ctx).Save(&daoTask).Error
 	if err != nil {
 		return nil, err
 	}

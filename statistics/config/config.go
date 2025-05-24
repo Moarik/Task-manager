@@ -48,6 +48,7 @@ type (
 
 	NatsSubjects struct {
 		UserCreatedEventSubject string `env:"NATS_USER_EVENT_SUBJECT,notEmpty"`
+		TaskCreatedEventSubject string `env:"NATS_TASK_EVENT_SUBJECT,notEmpty"`
 	}
 )
 

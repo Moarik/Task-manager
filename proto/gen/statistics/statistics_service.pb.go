@@ -109,6 +109,102 @@ func (x *GetUserStatisticsResponse) GetTotalUsers() int32 {
 	return 0
 }
 
+type UserTaskCount struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        int64                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	TaskCount     int32                  `protobuf:"varint,2,opt,name=task_count,json=taskCount,proto3" json:"task_count,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UserTaskCount) Reset() {
+	*x = UserTaskCount{}
+	mi := &file_statistics_statistics_service_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UserTaskCount) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UserTaskCount) ProtoMessage() {}
+
+func (x *UserTaskCount) ProtoReflect() protoreflect.Message {
+	mi := &file_statistics_statistics_service_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UserTaskCount.ProtoReflect.Descriptor instead.
+func (*UserTaskCount) Descriptor() ([]byte, []int) {
+	return file_statistics_statistics_service_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *UserTaskCount) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *UserTaskCount) GetTaskCount() int32 {
+	if x != nil {
+		return x.TaskCount
+	}
+	return 0
+}
+
+type GetTaskStatisticsResponseSpecial struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Statistics    []*UserTaskCount       `protobuf:"bytes,1,rep,name=statistics,proto3" json:"statistics,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTaskStatisticsResponseSpecial) Reset() {
+	*x = GetTaskStatisticsResponseSpecial{}
+	mi := &file_statistics_statistics_service_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTaskStatisticsResponseSpecial) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTaskStatisticsResponseSpecial) ProtoMessage() {}
+
+func (x *GetTaskStatisticsResponseSpecial) ProtoReflect() protoreflect.Message {
+	mi := &file_statistics_statistics_service_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTaskStatisticsResponseSpecial.ProtoReflect.Descriptor instead.
+func (*GetTaskStatisticsResponseSpecial) Descriptor() ([]byte, []int) {
+	return file_statistics_statistics_service_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *GetTaskStatisticsResponseSpecial) GetStatistics() []*UserTaskCount {
+	if x != nil {
+		return x.Statistics
+	}
+	return nil
+}
+
 type GetTaskStatisticsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -119,7 +215,7 @@ type GetTaskStatisticsResponse struct {
 
 func (x *GetTaskStatisticsResponse) Reset() {
 	*x = GetTaskStatisticsResponse{}
-	mi := &file_statistics_statistics_service_proto_msgTypes[2]
+	mi := &file_statistics_statistics_service_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -131,7 +227,7 @@ func (x *GetTaskStatisticsResponse) String() string {
 func (*GetTaskStatisticsResponse) ProtoMessage() {}
 
 func (x *GetTaskStatisticsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_statistics_statistics_service_proto_msgTypes[2]
+	mi := &file_statistics_statistics_service_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -144,7 +240,7 @@ func (x *GetTaskStatisticsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetTaskStatisticsResponse.ProtoReflect.Descriptor instead.
 func (*GetTaskStatisticsResponse) Descriptor() ([]byte, []int) {
-	return file_statistics_statistics_service_proto_rawDescGZIP(), []int{2}
+	return file_statistics_statistics_service_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GetTaskStatisticsResponse) GetId() int64 {
@@ -161,6 +257,94 @@ func (x *GetTaskStatisticsResponse) GetTotalTasks() int32 {
 	return 0
 }
 
+type TaskCreateNats struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TaskCreateNats) Reset() {
+	*x = TaskCreateNats{}
+	mi := &file_statistics_statistics_service_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TaskCreateNats) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TaskCreateNats) ProtoMessage() {}
+
+func (x *TaskCreateNats) ProtoReflect() protoreflect.Message {
+	mi := &file_statistics_statistics_service_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TaskCreateNats.ProtoReflect.Descriptor instead.
+func (*TaskCreateNats) Descriptor() ([]byte, []int) {
+	return file_statistics_statistics_service_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *TaskCreateNats) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+type TaskByIDRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TaskByIDRequest) Reset() {
+	*x = TaskByIDRequest{}
+	mi := &file_statistics_statistics_service_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TaskByIDRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TaskByIDRequest) ProtoMessage() {}
+
+func (x *TaskByIDRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_statistics_statistics_service_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TaskByIDRequest.ProtoReflect.Descriptor instead.
+func (*TaskByIDRequest) Descriptor() ([]byte, []int) {
+	return file_statistics_statistics_service_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *TaskByIDRequest) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
 var File_statistics_statistics_service_proto protoreflect.FileDescriptor
 
 const file_statistics_statistics_service_proto_rawDesc = "" +
@@ -171,14 +355,27 @@ const file_statistics_statistics_service_proto_rawDesc = "" +
 	"\x19GetUserStatisticsResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1f\n" +
 	"\vtotal_users\x18\x02 \x01(\x05R\n" +
-	"totalUsers\"L\n" +
+	"totalUsers\"G\n" +
+	"\rUserTaskCount\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\x03R\x06userId\x12\x1d\n" +
+	"\n" +
+	"task_count\x18\x02 \x01(\x05R\ttaskCount\"]\n" +
+	" GetTaskStatisticsResponseSpecial\x129\n" +
+	"\n" +
+	"statistics\x18\x01 \x03(\v2\x19.statistics.UserTaskCountR\n" +
+	"statistics\"L\n" +
 	"\x19GetTaskStatisticsResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1f\n" +
 	"\vtotal_tasks\x18\x02 \x01(\x05R\n" +
-	"totalTasks2\xb1\x01\n" +
+	"totalTasks\" \n" +
+	"\x0eTaskCreateNats\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"!\n" +
+	"\x0fTaskByIDRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id2\x99\x02\n" +
 	"\x11StatisticsService\x12M\n" +
-	"\x11GetUserStatistics\x12\x11.statistics.Empty\x1a%.statistics.GetUserStatisticsResponse\x12M\n" +
-	"\x11GetTaskStatistics\x12\x11.statistics.Empty\x1a%.statistics.GetTaskStatisticsResponseB\x0eZ\f./statisticsb\x06proto3"
+	"\x11GetUserStatistics\x12\x11.statistics.Empty\x1a%.statistics.GetUserStatisticsResponse\x12T\n" +
+	"\x11GetTaskStatistics\x12\x11.statistics.Empty\x1a,.statistics.GetTaskStatisticsResponseSpecial\x12_\n" +
+	"\x19GetTaskStatisticsByUserID\x12\x1b.statistics.TaskByIDRequest\x1a%.statistics.GetTaskStatisticsResponseB\x0eZ\f./statisticsb\x06proto3"
 
 var (
 	file_statistics_statistics_service_proto_rawDescOnce sync.Once
@@ -192,22 +389,29 @@ func file_statistics_statistics_service_proto_rawDescGZIP() []byte {
 	return file_statistics_statistics_service_proto_rawDescData
 }
 
-var file_statistics_statistics_service_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_statistics_statistics_service_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_statistics_statistics_service_proto_goTypes = []any{
-	(*Empty)(nil),                     // 0: statistics.Empty
-	(*GetUserStatisticsResponse)(nil), // 1: statistics.GetUserStatisticsResponse
-	(*GetTaskStatisticsResponse)(nil), // 2: statistics.GetTaskStatisticsResponse
+	(*Empty)(nil),                            // 0: statistics.Empty
+	(*GetUserStatisticsResponse)(nil),        // 1: statistics.GetUserStatisticsResponse
+	(*UserTaskCount)(nil),                    // 2: statistics.UserTaskCount
+	(*GetTaskStatisticsResponseSpecial)(nil), // 3: statistics.GetTaskStatisticsResponseSpecial
+	(*GetTaskStatisticsResponse)(nil),        // 4: statistics.GetTaskStatisticsResponse
+	(*TaskCreateNats)(nil),                   // 5: statistics.TaskCreateNats
+	(*TaskByIDRequest)(nil),                  // 6: statistics.TaskByIDRequest
 }
 var file_statistics_statistics_service_proto_depIdxs = []int32{
-	0, // 0: statistics.StatisticsService.GetUserStatistics:input_type -> statistics.Empty
-	0, // 1: statistics.StatisticsService.GetTaskStatistics:input_type -> statistics.Empty
-	1, // 2: statistics.StatisticsService.GetUserStatistics:output_type -> statistics.GetUserStatisticsResponse
-	2, // 3: statistics.StatisticsService.GetTaskStatistics:output_type -> statistics.GetTaskStatisticsResponse
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	2, // 0: statistics.GetTaskStatisticsResponseSpecial.statistics:type_name -> statistics.UserTaskCount
+	0, // 1: statistics.StatisticsService.GetUserStatistics:input_type -> statistics.Empty
+	0, // 2: statistics.StatisticsService.GetTaskStatistics:input_type -> statistics.Empty
+	6, // 3: statistics.StatisticsService.GetTaskStatisticsByUserID:input_type -> statistics.TaskByIDRequest
+	1, // 4: statistics.StatisticsService.GetUserStatistics:output_type -> statistics.GetUserStatisticsResponse
+	3, // 5: statistics.StatisticsService.GetTaskStatistics:output_type -> statistics.GetTaskStatisticsResponseSpecial
+	4, // 6: statistics.StatisticsService.GetTaskStatisticsByUserID:output_type -> statistics.GetTaskStatisticsResponse
+	4, // [4:7] is the sub-list for method output_type
+	1, // [1:4] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_statistics_statistics_service_proto_init() }
@@ -221,7 +425,7 @@ func file_statistics_statistics_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_statistics_statistics_service_proto_rawDesc), len(file_statistics_statistics_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

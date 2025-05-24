@@ -6,17 +6,24 @@ import (
 )
 
 type Task struct {
-	Repo TaskRepo
+	Repo     TaskRepo
+	Producer TaskEventStorage
 }
 
-func NewTask(repo TaskRepo) *Task {
+func NewTask(repo TaskRepo, producer TaskEventStorage) *Task {
 	return &Task{
-		Repo: repo,
+		Repo:     repo,
+		Producer: producer,
 	}
 }
 
 func (t *Task) CreateUserTaskService(ctx context.Context, task model.Task) (*model.Task, error) {
 	taskModel, err := t.Repo.CreateUserTask(ctx, task)
+	if err != nil {
+		return nil, err
+	}
+
+	err = t.Producer.Push(ctx, *taskModel)
 	if err != nil {
 		return nil, err
 	}

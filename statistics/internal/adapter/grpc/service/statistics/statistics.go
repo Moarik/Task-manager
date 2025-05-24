@@ -31,8 +31,25 @@ func (c *Client) GetUserStatistics(ctx context.Context, req *statistics.Empty) (
 	return sendTask, err
 }
 
-func (c *Client) GetTaskStatistics(ctx context.Context, req *statistics.Empty) (*statistics.GetTaskStatisticsResponse, error) {
-	returnTask, err := c.uc.GetTaskStatistics(ctx)
+func (c *Client) GetAllUserTaskStatistics(ctx context.Context, _ *statistics.Empty) (*statistics.GetTaskStatisticsResponseSpecial, error) {
+	stats, err := c.uc.GetTaskStatistics(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var response statistics.GetTaskStatisticsResponseSpecial
+	for _, stat := range *stats {
+		response.Statistics = append(response.Statistics, &statistics.UserTaskCount{
+			UserId:    stat.ID,
+			TaskCount: int32(stat.TotalTasks),
+		})
+	}
+
+	return &response, nil
+}
+
+func (c *Client) GetTaskStatisticsByUserID(ctx context.Context, req *statistics.TaskByIDRequest) (*statistics.GetTaskStatisticsResponse, error) {
+	returnTask, err := c.uc.GetTaskStatisticsByUserID(ctx, req.GetId())
 	if err != nil {
 		return nil, err
 	}

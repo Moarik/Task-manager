@@ -6,12 +6,15 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"taskManager/task/config"
 	grpcserver "taskManager/task/internal/adapter/grpc/service"
 	httpserver "taskManager/task/internal/adapter/http/service"
+	"taskManager/task/internal/adapter/nats/producer"
 	"taskManager/task/internal/adapter/postgres"
 	"taskManager/task/internal/usecase"
+	natsconn "taskManager/task/pkg/nats"
 	postgreconn "taskManager/task/pkg/postgre"
 )
 
@@ -33,11 +36,21 @@ func New(ctx context.Context, cfg *config.Config) (*App, error) {
 
 	postgresDB.Migrate()
 
+	// nats client
+	log.Println("connecting to NATS", "hosts", strings.Join(cfg.Nats.Hosts, ","))
+	natsClient, err := natsconn.NewClient(ctx, cfg.Nats.Hosts, cfg.Nats.NKey, cfg.Nats.IsTest)
+	if err != nil {
+		return nil, fmt.Errorf("nats.NewClient: %w", err)
+	}
+	log.Println("NATS connection status is", natsClient.Conn.Status().String())
+
+	taskProducer := producer.NewTaskProducer(natsClient, cfg.Nats.NatsSubjects.ClientEventSubject)
+
 	// Repository
 	taskRepo := postgres.New(postgresDB)
 
 	// UseCase
-	taskUsecase := usecase.NewTask(taskRepo)
+	taskUsecase := usecase.NewTask(taskRepo, taskProducer)
 
 	// http service
 	httpServer := httpserver.New(cfg.Server, *taskUsecase)

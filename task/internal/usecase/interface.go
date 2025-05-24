@@ -13,3 +13,7 @@ type TaskRepo interface {
 	GetAllUsersTasks(ctx context.Context, id int64) ([]*model.Task, error)
 	GetTaskByID(ctx context.Context, id int64) (*model.Task, error)
 }
+
+type TaskEventStorage interface {
+	Push(ctx context.Context, user model.Task) error
+}

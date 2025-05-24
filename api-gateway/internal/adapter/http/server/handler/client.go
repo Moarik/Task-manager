@@ -253,14 +253,58 @@ func (c *Client) GetUserStatistics(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"statistics": returnThing})
 }
 
-func (c *Client) GetAllUserStatistics(ctx *gin.Context) {
+func (c *Client) GetTaskStatistics(ctx *gin.Context) {
 	var req statistics.Empty
 
-	returnThing, err := c.statisticsClient.GetUserStatistics(ctx, &req)
+	returnThing, err := c.statisticsClient.GetTaskStatistics(ctx, &req)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"statistics": returnThing})
+}
+
+func (c *Client) GetTaskStatisticsByUserID(ctx *gin.Context) {
+
+	id := ctx.Param("id")
+	idInt, _ := strconv.ParseInt(id, 10, 64)
+
+	var req statistics.TaskByIDRequest
+
+	req.Id = idInt
+
+	returnThing, err := c.statisticsClient.GetTaskStatisticsByUserID(ctx, &req)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"statistics": returnThing})
+}
+
+func (c *Client) UpdateUserTask(ctx *gin.Context) {
+	userID, exists := ctx.Get("userID")
+	if !exists {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "User ID not found in context"})
+		return
+	}
+
+	idInt, _ := strconv.ParseInt(strconv.FormatInt(userID.(int64), 10), 10, 64)
+
+	var req taskSvc.UpdateUserTaskRequest
+	if err := ctx.BindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	req.UserId = fmt.Sprintf("%d", idInt)
+
+	updatedTask, err := c.taskClient.UpdateUserTask(ctx, &req)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"task": updatedTask})
 }

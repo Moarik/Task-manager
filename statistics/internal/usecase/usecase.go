@@ -24,8 +24,17 @@ func (s *Statistics) GetUserStatistics(ctx context.Context) (*model.UserStatisti
 	return statistics, nil
 }
 
-func (s *Statistics) GetTaskStatistics(ctx context.Context) (*model.TaskStatistics, error) {
+func (s *Statistics) GetTaskStatistics(ctx context.Context) (*[]model.TaskStatistics, error) {
 	statistics, err := s.Repo.GetTaskStatistics(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return statistics, nil
+}
+
+func (s *Statistics) GetTaskStatisticsByUserID(ctx context.Context, userID int64) (*model.TaskStatistics, error) {
+	statistics, err := s.Repo.GetTaskStatisticsByUserID(ctx, userID)
 	if err != nil {
 		return nil, err
 	}

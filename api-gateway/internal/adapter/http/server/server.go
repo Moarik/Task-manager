@@ -56,11 +56,12 @@ func (a *API) setupRoutes() {
 		protectedGroup := a.server.Group("/protected", middleware.AuthRequired())
 		{
 			protectedGroup.GET("/:id", a.ClientHandler.GetUserByID)
-
 			protectedGroup.DELETE("/", a.ClientHandler.DeleteUserByID)
+
 			protectedGroup.POST("/task", a.ClientHandler.CreateTask)
 			protectedGroup.GET("/task/:id", a.ClientHandler.GetUserTaskByID)
 			protectedGroup.GET("/task", a.ClientHandler.GetAllUserTask)
+			protectedGroup.PUT("/task", a.ClientHandler.UpdateUserTask)
 			protectedGroup.DELETE("/task/:id", a.ClientHandler.DeleteUserTaskByID)
 		}
 	}
@@ -68,7 +69,8 @@ func (a *API) setupRoutes() {
 	statisticsGroup := a.server.Group("/statistics")
 	{
 		statisticsGroup.GET("/user", a.ClientHandler.GetUserStatistics)
-		statisticsGroup.GET("/task", a.ClientHandler.GetAllUserStatistics)
+		statisticsGroup.GET("/task/:id", a.ClientHandler.GetTaskStatisticsByUserID)
+		statisticsGroup.GET("/task", a.ClientHandler.GetTaskStatistics)
 	}
 }
 

@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	StatisticsService_GetUserStatistics_FullMethodName = "/statistics.StatisticsService/GetUserStatistics"
-	StatisticsService_GetTaskStatistics_FullMethodName = "/statistics.StatisticsService/GetTaskStatistics"
+	StatisticsService_GetUserStatistics_FullMethodName         = "/statistics.StatisticsService/GetUserStatistics"
+	StatisticsService_GetTaskStatistics_FullMethodName         = "/statistics.StatisticsService/GetTaskStatistics"
+	StatisticsService_GetTaskStatisticsByUserID_FullMethodName = "/statistics.StatisticsService/GetTaskStatisticsByUserID"
 )
 
 // StatisticsServiceClient is the client API for StatisticsService service.
@@ -28,7 +29,8 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type StatisticsServiceClient interface {
 	GetUserStatistics(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetUserStatisticsResponse, error)
-	GetTaskStatistics(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetTaskStatisticsResponse, error)
+	GetTaskStatistics(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetTaskStatisticsResponseSpecial, error)
+	GetTaskStatisticsByUserID(ctx context.Context, in *TaskByIDRequest, opts ...grpc.CallOption) (*GetTaskStatisticsResponse, error)
 }
 
 type statisticsServiceClient struct {
@@ -49,10 +51,20 @@ func (c *statisticsServiceClient) GetUserStatistics(ctx context.Context, in *Emp
 	return out, nil
 }
 
-func (c *statisticsServiceClient) GetTaskStatistics(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetTaskStatisticsResponse, error) {
+func (c *statisticsServiceClient) GetTaskStatistics(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetTaskStatisticsResponseSpecial, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetTaskStatisticsResponseSpecial)
+	err := c.cc.Invoke(ctx, StatisticsService_GetTaskStatistics_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *statisticsServiceClient) GetTaskStatisticsByUserID(ctx context.Context, in *TaskByIDRequest, opts ...grpc.CallOption) (*GetTaskStatisticsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetTaskStatisticsResponse)
-	err := c.cc.Invoke(ctx, StatisticsService_GetTaskStatistics_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, StatisticsService_GetTaskStatisticsByUserID_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +76,8 @@ func (c *statisticsServiceClient) GetTaskStatistics(ctx context.Context, in *Emp
 // for forward compatibility.
 type StatisticsServiceServer interface {
 	GetUserStatistics(context.Context, *Empty) (*GetUserStatisticsResponse, error)
-	GetTaskStatistics(context.Context, *Empty) (*GetTaskStatisticsResponse, error)
+	GetTaskStatistics(context.Context, *Empty) (*GetTaskStatisticsResponseSpecial, error)
+	GetTaskStatisticsByUserID(context.Context, *TaskByIDRequest) (*GetTaskStatisticsResponse, error)
 	mustEmbedUnimplementedStatisticsServiceServer()
 }
 
@@ -78,8 +91,11 @@ type UnimplementedStatisticsServiceServer struct{}
 func (UnimplementedStatisticsServiceServer) GetUserStatistics(context.Context, *Empty) (*GetUserStatisticsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserStatistics not implemented")
 }
-func (UnimplementedStatisticsServiceServer) GetTaskStatistics(context.Context, *Empty) (*GetTaskStatisticsResponse, error) {
+func (UnimplementedStatisticsServiceServer) GetTaskStatistics(context.Context, *Empty) (*GetTaskStatisticsResponseSpecial, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTaskStatistics not implemented")
+}
+func (UnimplementedStatisticsServiceServer) GetTaskStatisticsByUserID(context.Context, *TaskByIDRequest) (*GetTaskStatisticsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTaskStatisticsByUserID not implemented")
 }
 func (UnimplementedStatisticsServiceServer) mustEmbedUnimplementedStatisticsServiceServer() {}
 func (UnimplementedStatisticsServiceServer) testEmbeddedByValue()                           {}
@@ -138,6 +154,24 @@ func _StatisticsService_GetTaskStatistics_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _StatisticsService_GetTaskStatisticsByUserID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TaskByIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StatisticsServiceServer).GetTaskStatisticsByUserID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StatisticsService_GetTaskStatisticsByUserID_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StatisticsServiceServer).GetTaskStatisticsByUserID(ctx, req.(*TaskByIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // StatisticsService_ServiceDesc is the grpc.ServiceDesc for StatisticsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +186,10 @@ var StatisticsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetTaskStatistics",
 			Handler:    _StatisticsService_GetTaskStatistics_Handler,
+		},
+		{
+			MethodName: "GetTaskStatisticsByUserID",
+			Handler:    _StatisticsService_GetTaskStatisticsByUserID_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

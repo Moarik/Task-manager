@@ -61,6 +61,11 @@ func New(ctx context.Context, cfg *config.Config) (*App, error) {
 		Handler: natsHandler.HandleUserCreated,
 	})
 
+	natsPubSubConsumer.Subscribe(natsconsumer.PubSubSubscriptionConfig{
+		Subject: cfg.Nats.NatsSubjects.TaskCreatedEventSubject,
+		Handler: natsHandler.HandleTaskCreated,
+	})
+
 	httpServer := httpserver.New(cfg.Server, statisticsUsecase)
 
 	grpcServer := grpcserver.New(cfg.Server.GRPCServer, statisticsUsecase)
@@ -80,10 +85,10 @@ func (a *App) Close(ctx context.Context) {
 		log.Println("failed to shutdown gRPC service", err)
 	}
 
-	//err = a.grpcServer.Stop(ctx)
-	//if err != nil {
-	//	log.Println("failed to shutdown gRPC service", err)
-	//}
+	err = a.grpcServer.Stop(ctx)
+	if err != nil {
+		log.Println("failed to shutdown gRPC service", err)
+	}
 }
 
 func (a *App) Run() error {
